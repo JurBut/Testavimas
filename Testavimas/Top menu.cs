@@ -16,41 +16,28 @@ namespace Testavimas
             this.driver = driver;
         }
 
-        public void AddToCart (string whichItemToAdd)
-        {
 
-            By AddButton = By.XPath("(//div[@class='button-wrapper']//button[@type='submit'])"+ "[" + whichItemToAdd + "]");
-            driver.FindElement(AddButton).Click();
-
-        }
-
-        public string CheckPrice (string whichItemToAdd)
+        public void ClickOnCart()
 
         {
+            By ClickOnCart = By.XPath("//div[contains(@class,'headerCart')]");
 
-            By PriceOfItem = By.XPath("(//div[@class='product-card--price'])" + "[" + whichItemToAdd + "]");
-            
-            string ItemPrice = driver.FindElement(PriceOfItem).Text;
-
-            return ItemPrice;
-
+            driver.FindElement(ClickOnCart).Click();
         }
 
         public string CheckPriceInBasket ()
 
         {
-
-            By ClickOnCart = By.XPath("//div[@class='headerCart-wrapper']");
-
-            driver.FindElement(ClickOnCart).Click();
-
             By PriceInCart = By.XPath("//div[@class='price']");
 
             string ItemPriceCart = driver.FindElement(PriceInCart).Text;
 
             return ItemPriceCart;
-
         }
+
+
+
+
 
     }
 

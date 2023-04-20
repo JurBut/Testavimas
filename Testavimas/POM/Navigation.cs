@@ -5,6 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using System.Threading;
+using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Chrome;
+using NUnit.Framework;
+using System.Xml.Linq;
+using Testavimas.POM;
 
 namespace Testavimas
 {
@@ -12,41 +19,43 @@ namespace Testavimas
     public class Navigation
     {
         IWebDriver driver;
+       
+
         public Navigation(IWebDriver driver)
         {
             this.driver = driver;
         }
+
+
         public void WhichCategoryToChoose(string parent, string child)
         {
-            By ParentCategory = By.XPath("//a[contains(text(),'" + parent + "')]");
+            By parentCategory = By.XPath("//a[contains(text(),'" + parent + "')]");
             Actions action = new Actions(driver);
-            IWebElement ParentCatObj = driver.FindElement(ParentCategory);
-            action.MoveToElement(ParentCatObj).Perform();
+            IWebElement parentCatObj = driver.FindElement(parentCategory);
+            action.MoveToElement(parentCatObj).Perform();
             By innerCat = By.XPath("//span[contains(text(),'" + child + "')]//parent::a");
             driver.FindElement(innerCat).Click();
         }
 
-        public void ClosePopUp()
-        {
-            By PopUpClose = By.XPath("//button[contains(@class,'InnerPopupCloseButton')]");
-            driver.FindElement(PopUpClose).Click();
-        }
-
         public void AddToCart(string whichItemToAdd)
         {
-            By AddButton = By.XPath("(//div[@class='button-wrapper']//button[@type='submit'])" + "[" + whichItemToAdd + "]");
-            driver.FindElement(AddButton).Click();
+            string addToCartXpath = "(//div[@class='button-wrapper']//button[@type='submit'])" + "[" + whichItemToAdd + "]";            
+            GeneralMethods general = new GeneralMethods(driver);          
+            general.ScrollToElement(addToCartXpath); 
+            By addButton = By.XPath(addToCartXpath);
+            driver.FindElement(addButton).Click();
+
         }
 
-        public string CheckPrice(string whichItemToCheck)
-
+        public void ClickSortByLowestPrice()
         {
+            By clickSort = By.XPath("//div[contains(@class,'pagination-top')]//select[@id='sort-box']");
+            driver.FindElement(clickSort).Click();
+            By element = By.XPath("//div[contains(@class,'pagination-top')]//select[@id='sort-box']//option[contains(text(),'Pigiausios viršuje')]");
+            Actions action = new Actions(driver);
+            action.MoveToElement(driver.FindElement(element));
+            driver.FindElement(element).Click();
 
-            By PriceOfItem = By.XPath("(//div[@class='product-card--price'])" + "[" + whichItemToCheck + "]");
-            string ItemPrice = driver.FindElement(PriceOfItem).Text;
-            return ItemPrice;
         }
-
     }
-
  }

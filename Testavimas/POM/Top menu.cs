@@ -1,44 +1,53 @@
-﻿using OpenQA.Selenium.Interactions;
+﻿using NUnit.Framework;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
+using OpenQA.Selenium.Support.UI;
+using System.Xml.Linq;
+using System.Text.RegularExpressions;
+using Testavimas.POM;
 
 namespace Testavimas
 {
     internal class TopMenu
+     
     {
         IWebDriver driver;
+        By searchBarXpath;
+        By inputXpath;
+        By clickSearchXpath;
+        private string cartXpath = "//div[@class='headerCart-amount ']";
+
         public TopMenu(IWebDriver driver)
         {
             this.driver = driver;
+            searchBarXpath = By.XPath("//span[@class='sn-suggest']");
+            inputXpath = By.XPath("//input[@type='search'][2]");
+            clickSearchXpath = By.XPath("//button[@class='headerSearchButton']");
+            
         }
-
 
         public void ClickOnCart()
 
         {
-            By ClickOnCart = By.XPath("//div[contains(@class,'headerCart')]");
-
-            driver.FindElement(ClickOnCart).Click();
+            GeneralMethods navigation = new GeneralMethods(driver);
+            navigation.ClosePopUp("//img[@class='close-icon-popup']");         
+            IWebElement cart = navigation.WaitUntilMethod(cartXpath, driver);
+            cart.Click();
         }
 
-        public string CheckPriceInBasket ()
+        public void ClickOnSearchBar(string itemName)
 
-        {
-            By PriceInCart = By.XPath("//div[@class='price']");
-
-            string ItemPriceCart = driver.FindElement(PriceInCart).Text;
-
-            return ItemPriceCart;
+        {           
+            driver.FindElement(searchBarXpath).Click();          
+            driver.FindElement(inputXpath).SendKeys(itemName);            
+            driver.FindElement(clickSearchXpath).Click();
+         
         }
-
-
-
-
-
     }
-
 }

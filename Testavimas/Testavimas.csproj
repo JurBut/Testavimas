@@ -60,6 +60,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="POM\GeneralMethods.cs" />
+    <Compile Include="POM\ItemDetails.cs" />
     <Compile Include="POM\Navigation.cs" />
     <Compile Include="Tests\OtherCases.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

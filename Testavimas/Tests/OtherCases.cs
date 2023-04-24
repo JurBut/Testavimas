@@ -26,7 +26,7 @@ namespace Testavimas
         [TearDown]
         public static void TearDown()
         {
-            //driver.Quit();
+            driver.Quit();
         }
 
 
@@ -84,6 +84,5 @@ namespace Testavimas
             searchResults.CheckPriceSortingFromLowest();
 
         }
-
     }
 }

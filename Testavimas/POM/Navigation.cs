@@ -26,7 +26,6 @@ namespace Testavimas
             this.driver = driver;
         }
 
-
         public void WhichCategoryToChoose(string parent, string child)
         {
             By parentCategory = By.XPath("//a[contains(text(),'" + parent + "')]");

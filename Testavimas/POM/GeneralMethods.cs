@@ -35,8 +35,10 @@ namespace Testavimas.POM
 
         }
 
+        // Čia gal pavadinimas toks missleading šitas metodas tiesiog paclickina elementą duotą,
+        // ir suvalgo exceptioną jeigu toks iššoka. Gali atsirasti nenumatytų klaidų.
+        // Mano skoniui pavadinimas galėtų būti tiesiog kitos pvz.: ClickElementIfExists
         public void ClosePopUp(string xPath)
-
         {
             try
             {

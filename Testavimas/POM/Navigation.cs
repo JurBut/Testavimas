@@ -19,7 +19,6 @@ namespace Testavimas
     public class Navigation
     {
         IWebDriver driver;
-       
 
         public Navigation(IWebDriver driver)
         {

@@ -9,14 +9,14 @@ namespace Testavimas
     public class OtherCases
 
     {
-        private static string driverPath = "C:\\Users\\M\\Desktop\\Mokslai\\Testavimas\\Testavimas\\bin\\Debug\\chromedriver.exe";
+       // private static string driverPath = "C:\\Users\\M\\Desktop\\Mokslai\\Testavimas\\Testavimas\\bin\\Debug\\chromedriver.exe";
         static IWebDriver driver;
         
 
         [SetUp]
         public static void SETUP()
         {           
-            driver = new ChromeDriver(driverPath);
+            driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
             driver.Url = "https://www.eurovaistine.lt/";
             By Cookies = By.XPath("//button[@id='onetrust-accept-btn-handler']");
@@ -26,6 +26,7 @@ namespace Testavimas
         [TearDown]
         public static void TearDown()
         {
+            driver.Close();
             driver.Quit();
         }
 
@@ -43,6 +44,14 @@ namespace Testavimas
             navigation.WhichCategoryToChoose("Kosmetika", "Veidui");  
 
             //Kelinta preke pridedu i krepseli ir pasiimu jos kaina sarase
+            // Suprantu kad xPath'as yra stringas, 
+            // bet cia kaip ir logine skaiciaus verte siunti.
+            // niekas nenuluztu jeigu whichItem bus int'as
+            // na pakeistus kad AddToCart metodas irgi priima int'a
+            // ir ChecckPriceInList atitinkamai. Ka geriau?
+            // kaip ir nelabai svarbu su dabartiniais resursais
+            // bet int tiesiog maziau atmintis ir CPU ciklu 
+            // suvalgys perduodant.
             string whichItem = "2";          
             navigation.AddToCart(whichItem);         
             double price = details.CheckPriceInList(whichItem);

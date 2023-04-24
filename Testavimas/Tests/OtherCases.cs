@@ -14,7 +14,7 @@ namespace Testavimas
         
 
         [SetUp]
-        public static void SETUP()
+        public void SETUP()
         {           
             driver = new ChromeDriver(driverPath);
             driver.Manage().Window.Maximize();
@@ -24,14 +24,14 @@ namespace Testavimas
         }
 
         [TearDown]
-        public static void TearDown()
+        public void TearDown()
         {
-            //driver.Quit();
+            driver.Quit();
         }
 
 
         [Test]
-        public static void IfPricesEvenTest()
+        public void IfPricesEvenTest()
 
         {
             
@@ -59,7 +59,7 @@ namespace Testavimas
         }
 
         [Test]
-        public static void SearchTest()
+        public void SearchTest()
         {
             string searchKeyword = "Pertusinas";
             TopMenu search = new TopMenu(driver);
@@ -71,7 +71,7 @@ namespace Testavimas
         }
 
         [Test]
-        public static void PriceListDescendingTest()
+        public void PriceListDescendingTest()
         {
 
             //Kuria kategorija atidaryti

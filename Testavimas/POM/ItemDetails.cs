@@ -91,8 +91,6 @@ namespace Testavimas.POM
                     prices.Add(priceDouble);
                 }
             }
-           
-            //Console.WriteLine("Prices List: " + string.Join(", ", prices));
 
             for (int i = 0; i > prices.Count - 1; i++)
             {

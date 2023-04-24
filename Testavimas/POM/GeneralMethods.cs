@@ -45,7 +45,7 @@ namespace Testavimas.POM
             }
             catch (NoSuchElementException ex)
             {
-                //GetScreenShot();
+                
                 Console.WriteLine(ex.ToString());
             }
         }

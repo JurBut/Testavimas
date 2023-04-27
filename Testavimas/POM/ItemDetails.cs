@@ -16,47 +16,44 @@ namespace Testavimas.POM
     {
 
         IWebDriver driver;
-        private string ItemNameXpath = "(//div[@class='product-card--title'])";
-        By PriceInCartXpath;
-        By ItemCardXpath;
+        private string itemNameXpath = "//div[@class='title']"; //naudoju kaip xPath, nes naudoju for loope, kuriame prie string + i
+        By priceInCart = By.XPath("//div[@class='cartUnitPrice']");
+        By itemCard = By.XPath("//div[@class ='productCardContent']");
+        By discountPrice = By.XPath(".//div[@class='productPrice flex-end']//*[last()][text()]");
+        By noneDiscountPrice = By.XPath(".//div[@class ='productPrice text-end']");
 
 
         public ItemDetails(IWebDriver driver)
         {
-            this.driver = driver;
-            PriceInCartXpath = By.XPath("//div[@class='price']");
-            ItemCardXpath = By.XPath("//div[@class = 'product-card']");
+            this.driver = driver;                       
         }   
 
-        public double CheckPriceInList(string whichItemToCheck)
-
+        public double PriceFromItemList(int whichItemToCheck)
         {
-            By priceOfItem = By.XPath("(//div[@class='product-card--price'])" + "[" + whichItemToCheck + "]");
+            By priceOfItem = By.XPath("(//div[contains(@class,'productPrice')])" + "[" + whichItemToCheck + "]");
             string itemPrice = driver.FindElement(priceOfItem).Text;
-            decimal decimalPrice = decimal.Parse(itemPrice.Replace(" €", "").Replace(",", "."));
-            double price = (double)decimalPrice;
-            return price;
+            double priceDouble = double.Parse(itemPrice.Replace(" €", "").Replace(",", "."));           
+            return priceDouble;
         }
 
-        public double CheckPriceInBasket()
-
-        {           
-            string itemPriceCart = driver.FindElement(PriceInCartXpath).Text;
-            decimal decimalPrice = decimal.Parse(itemPriceCart.Replace(" €", "").Replace(",", "."));
-            double price = (double)decimalPrice;
-            return price;
-        }
-
-        public void CheckItemName(string name)
-
+        public double PriceFromBasket()
         {
-            int skaicius = driver.FindElements(By.XPath(ItemNameXpath)).Count;
+            GeneralMethods general = new GeneralMethods(driver);
+            IWebElement cart = general.WaitUntilElementExists("//div[@class='cartUnitPrice']", driver);
+            string itemPriceCart = cart.FindElement(priceInCart).Text;
+            double priceDouble = double.Parse(itemPriceCart.Replace(" €", "").Replace(",", "."));
+            return priceDouble;
+        }
 
-            for (int i = 1; i <= skaicius; i++)
+        public void CheckIfNameInDescription(string name)
+        {
+            int howManyItems = driver.FindElements(By.XPath(itemNameXpath)).Count;
+
+            for (int i = 1; i <= howManyItems; i++)
             {
-                By findName = By.XPath(ItemNameXpath + "[" + i + "]");
-                string chosenName = driver.FindElement(findName).Text.ToLower();
-                if (!chosenName.Contains(name.ToLower()))
+                By descriptionField = By.XPath(itemNameXpath + "[" + i + "]");
+                string description = driver.FindElement(descriptionField).Text.ToLower();
+                if (!description.Contains(name.ToLower()))
                 {
                     Assert.Fail("Search is not working");
                 }
@@ -64,33 +61,29 @@ namespace Testavimas.POM
         }
 
         public void CheckPriceSortingFromLowest()
-
         {           
             List<double> prices = new List<double>();
             
-            foreach (IWebElement card in driver.FindElements(ItemCardXpath))
-            {
-                IWebElement priceElement = card.FindElement(By.XPath(".//div[@class='product-card--price']"));
-
-                if (card.FindElements(By.XPath(".//div[contains(@class,'discount')]")).Count > 0)
-                {
-                    
+            foreach (IWebElement card in driver.FindElements(itemCard))
+            {               
+                if (card.FindElements(discountPrice).Count > 0)
+                {                   
                     // Discount egzistuoja
-                    IWebElement discountPriceElement = card.FindElement(By.XPath(".//div[@class='product-card--discount']"));
+                    IWebElement discountPriceElement = card.FindElement(discountPrice);
                     string onePrice = discountPriceElement.Text;
-                    decimal decimalPrice = decimal.Parse(onePrice.Replace(" €", "").Replace(",", "."));
-                    double priceDouble = (double)decimalPrice;
+                    double priceDouble = double.Parse(onePrice.Replace(" €", "").Replace(",", "."));
                     prices.Add(priceDouble);
                 }
                 else
-                {                   
-                    //  Discount neegzistuoja
-                    string onePrice = priceElement.Text;
-                    decimal decimalPrice = decimal.Parse(onePrice.Replace(" €", "").Replace(",", "."));
-                    double priceDouble = (double)decimalPrice;
+                {
+                    // Discount neegzistuoja
+                    IWebElement PriceElement = card.FindElement(noneDiscountPrice);
+                    string priceNoDiscountElement = PriceElement.Text;
+                    double priceDouble = double.Parse(priceNoDiscountElement.Replace(" €", "").Replace(",", "."));
                     prices.Add(priceDouble);
                 }
             }
+            Console.WriteLine("Price List: " + string.Join(", ", prices));
 
             for (int i = 0; i > prices.Count - 1; i++)
             {
@@ -101,7 +94,6 @@ namespace Testavimas.POM
                 }
             }
         }
-
     }
 }
 

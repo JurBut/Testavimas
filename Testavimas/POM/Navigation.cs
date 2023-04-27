@@ -19,14 +19,14 @@ namespace Testavimas
     public class Navigation
     {
         IWebDriver driver;
-       
+        private string sortButtonXpath = "//div[contains(text(),'Rikiavimas')]";
 
         public Navigation(IWebDriver driver)
         {
-            this.driver = driver;
+            this.driver = driver;           
         }
 
-        public void WhichCategoryToChoose(string parent, string child)
+        public void ClickOnCategory(string parent, string child)
         {
             By parentCategory = By.XPath("//a[contains(text(),'" + parent + "')]");
             Actions action = new Actions(driver);
@@ -36,25 +36,27 @@ namespace Testavimas
             driver.FindElement(innerCat).Click();
         }
 
-        public void AddToCart(string whichItemToAdd)
+        public void AddItemToCart(int whichItemToAdd)
         {
-            string addToCartXpath = "(//div[@class='button-wrapper']//button[@type='submit'])" + "[" + whichItemToAdd + "]";            
-            GeneralMethods general = new GeneralMethods(driver);          
-            general.ScrollToElement(addToCartXpath); 
-            By addButton = By.XPath(addToCartXpath);
-            driver.FindElement(addButton).Click();
-
+            string addToCartXpath = "(//div[@class='cardButtons'])" + "[" + whichItemToAdd + "]";
+            string itemCardXpath = "(//a[@class='productCard'])" + "[" + whichItemToAdd + "]";
+            GeneralMethods general = new GeneralMethods(driver);
+            general.ClickElementIfExists("//button[contains(@class,'CloseButton')]");            
+            general.ScrollToElement(itemCardXpath);
+            general.MoveToElement(itemCardXpath);
+            By addToBasketButton = By.XPath(addToCartXpath);
+            driver.FindElement(addToBasketButton).Click();
         }
 
         public void ClickSortByLowestPrice()
         {
-            By clickSort = By.XPath("//div[contains(@class,'pagination-top')]//select[@id='sort-box']");
-            driver.FindElement(clickSort).Click();
-            By element = By.XPath("//div[contains(@class,'pagination-top')]//select[@id='sort-box']//option[contains(text(),'Pigiausios viršuje')]");
+            GeneralMethods generalMethods = new GeneralMethods(driver);
+            IWebElement sortButton = generalMethods.WaitUntilElementExists(sortButtonXpath, driver);
+            sortButton.Click();
+            By element = By.XPath("//div[contains(@id,'Pigiausios viršuje')]");
             Actions action = new Actions(driver);
             action.MoveToElement(driver.FindElement(element));
             driver.FindElement(element).Click();
-
         }
     }
  }

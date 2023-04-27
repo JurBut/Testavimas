@@ -18,36 +18,31 @@ namespace Testavimas
      
     {
         IWebDriver driver;
-        By searchBarXpath;
-        By inputXpath;
-        By clickSearchXpath;
-        private string cartXpath = "//div[@class='headerCart-amount ']";
+        By searchBar = By.XPath("//span[@class='sn-suggest']");
+        By inputSpace = By.XPath("//input[@type='search'][2]");
+        By searchButton = By.XPath("//button[@class='headerSearchButton']");
+        private string cartButtonXpath = "//div[@class='headerCart-wrapper']";
 
         public TopMenu(IWebDriver driver)
         {
             this.driver = driver;
-            searchBarXpath = By.XPath("//span[@class='sn-suggest']");
-            inputXpath = By.XPath("//input[@type='search'][2]");
-            clickSearchXpath = By.XPath("//button[@class='headerSearchButton']");
-            
         }
 
         public void ClickOnCart()
-
         {
-            GeneralMethods navigation = new GeneralMethods(driver);
-            navigation.ClosePopUp("//img[@class='close-icon-popup']");         
-            IWebElement cart = navigation.WaitUntilMethod(cartXpath, driver);
+            GeneralMethods general = new GeneralMethods(driver);
+            general.ClickElementIfExists("//button[contains(@class,'PopupCloseButton')]");
+            //si apacioje idejau, nes nenorejau naudoti thread sleep. Jei neidedu, tada paspaudzia ant krepselio per greitai ir nerodo prekes krepselyje.
+            IWebElement cart1 = general.WaitUntilElementExists("//div[@class='headerCart-amount']", driver);
+            IWebElement cart = general.WaitUntilElementExists(cartButtonXpath, driver);
             cart.Click();
         }
 
-        public void ClickOnSearchBar(string itemName)
-
+        public void SearchForItem(string itemName)
         {           
-            driver.FindElement(searchBarXpath).Click();          
-            driver.FindElement(inputXpath).SendKeys(itemName);            
-            driver.FindElement(clickSearchXpath).Click();
-         
+            driver.FindElement(searchBar).Click();          
+            driver.FindElement(inputSpace).SendKeys(itemName);            
+            driver.FindElement(searchButton).Click();        
         }
     }
 }
